@@ -6,7 +6,7 @@ export const useSignup = () => {
     const[isLoading, setIsLoading] = useState(null)
     const{dispatch} = useAuthContext()
 
-    const singup = async (ElementInternals, password) => {
+    const signup = async (email, password) => {
         setIsLoading(true)
         setError(null)
 
@@ -33,5 +33,5 @@ export const useSignup = () => {
         }
     }
 
-    return {singup, isLoading, error}
+    return {signup, isLoading, error}
 }
