@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import workoutRoutes from './routes/workouts.js'; // Ensure to include the .js extension
+const userRoutes = require("./routes/user.js")
 
 
 
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 // Routes
 app.use(cors());
 app.use('/api/workouts', workoutRoutes);
+app.use('/api/user', userRoutes);
 
 
 // Connect to the database
