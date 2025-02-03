@@ -1,73 +1,69 @@
-const mongoose = require("mongoose")
-const bcrypt = require("bcrypt")
-const validator = require("validator")
+import mongoose from "mongoose"; // Use import
+import bcrypt from "bcrypt"; // Use import
+import validator from "validator"; // Use import
 
-const schema = mongoose.Schema
+const { Schema } = mongoose;
 
 const userSchema = new Schema({
     email: {
         type: String,
-        required:true,
+        required: true,
         unique: true,
     },
-    password:{
+    password: {
         type: String,
-        required:true
+        required: true
     }
-})
+});
 
-// static signup method
-userSchema.statics.signup = async function (email, password)  {
+// Static signup method
+userSchema.statics.signup = async function (email, password) {
 
-    //validation
-    if (!email || !password){
-        throw Error("All fields must be filled")
+    // Validation
+    if (!email || !password) {
+        throw Error("All fields must be filled");
     }
-    if (!validator.isEmail(email)){
-        throw Error("Email is not valid")
+    if (!validator.isEmail(email)) {
+        throw Error("Email is not valid");
     }
-    if(!validator.isStrongPassword(password)){
-        throw Error("Password is not strong enough")
-    }
-
-    const exists =  await this.findone({email})
-
-    if(exists){
-        throw Error("Email already in use")
+    if (!validator.isStrongPassword(password)) {
+        throw Error("Password is not strong enough");
     }
 
-    const salt = await bcrypt.genSalt(10)
-    const hash = await bcrypt.hash(password, salt)
+    const exists = await this.findOne({ email });
 
+    if (exists) {
+        throw Error("Email already in use");
+    }
 
-    const user = await this.create({email, password: hash})
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
 
-    return user
+    const user = await this.create({ email, password: hash });
 
-
-
+    return user;
 }
 
-//static login method
+// Static login method
 userSchema.statics.login = async function (email, password) {
 
-    if (!email || !password){
-        throw Error("All fields must be filled")
+    if (!email || !password) {
+        throw Error("All fields must be filled");
     }
 
-    const user =  await this.findone({email})
+    const user = await this.findOne({ email });
 
-    if(!user){
-        throw Error("Incorrect email")
+    if (!user) {
+        throw Error("Incorrect email");
     }
 
-    const match = await bcrypt.compare(password, user.password)
+    const match = await bcrypt.compare(password, user.password);
 
-    if(!match){
-        throw Error("Incorrect password")
+    if (!match) {
+        throw Error("Incorrect password");
     }
 
-    return user
+    return user;
 }
 
-module.exports = mongoose.model("user", userSchema)
+export default mongoose.model("user", userSchema); // Use export default for ES Modules
